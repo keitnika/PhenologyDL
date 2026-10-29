@@ -1,0 +1,219 @@
+{
+  "format_version": 1,
+  "model_name": "bbch12_multitask_dinov2_vitb14",
+  "backbone": {
+    "repository": "facebookresearch/dinov2",
+    "torch_hub_model": "dinov2_vitb14",
+    "embedding_dimension": 768
+  },
+  "architecture": {
+    "representation": "concatenate normalized CLS token and mean normalized patch token",
+    "representation_dimension": 1536,
+    "feature_normalization": "LayerNorm(1536)",
+    "classifier": "Linear(1536, 12)",
+    "number_of_classes": 12,
+    "regression_head": "Linear(1536, 1) with sigmoid scaled to BBCH 0-99",
+    "outputs": [
+      "class_logits",
+      "continuous_bbch_estimate"
+    ]
+  },
+  "preprocessing": {
+    "input_size": 336,
+    "resize_short_side": 384,
+    "center_crop": 336,
+    "interpolation": "bicubic",
+    "exif_transpose": true,
+    "color_mode": "RGB",
+    "normalization_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "normalization_std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "classes": [
+    {
+      "id": 0,
+      "name": "gem_dev",
+      "bbch_min": 0,
+      "bbch_max": 9,
+      "level1": "A"
+    },
+    {
+      "id": 1,
+      "name": "leaf_dev",
+      "bbch_min": 10,
+      "bbch_max": 19,
+      "level1": "B"
+    },
+    {
+      "id": 2,
+      "name": "53",
+      "bbch_min": 51,
+      "bbch_max": 53,
+      "level1": "C"
+    },
+    {
+      "id": 3,
+      "name": "55",
+      "bbch_min": 55,
+      "bbch_max": 56,
+      "level1": "C"
+    },
+    {
+      "id": 4,
+      "name": "57",
+      "bbch_min": 57,
+      "bbch_max": 59,
+      "level1": "C"
+    },
+    {
+      "id": 5,
+      "name": "flowering",
+      "bbch_min": 61,
+      "bbch_max": 69,
+      "level1": "D"
+    },
+    {
+      "id": 6,
+      "name": "73",
+      "bbch_min": 71,
+      "bbch_max": 73,
+      "level1": "E"
+    },
+    {
+      "id": 7,
+      "name": "75",
+      "bbch_min": 75,
+      "bbch_max": 75,
+      "level1": "E"
+    },
+    {
+      "id": 8,
+      "name": "77",
+      "bbch_min": 77,
+      "bbch_max": 79,
+      "level1": "E"
+    },
+    {
+      "id": 9,
+      "name": "83",
+      "bbch_min": 81,
+      "bbch_max": 83,
+      "level1": "F"
+    },
+    {
+      "id": 10,
+      "name": "85",
+      "bbch_min": 85,
+      "bbch_max": 85,
+      "level1": "F"
+    },
+    {
+      "id": 11,
+      "name": "87_senescence",
+      "bbch_min": 87,
+      "bbch_max": 99,
+      "level1": "G"
+    }
+  ],
+  "level1_phases": [
+    {
+      "id": "A",
+      "name": "bud development",
+      "bbch_min": 0,
+      "bbch_max": 9
+    },
+    {
+      "id": "B",
+      "name": "leaf development",
+      "bbch_min": 10,
+      "bbch_max": 19
+    },
+    {
+      "id": "C",
+      "name": "inflorescence emergence",
+      "bbch_min": 51,
+      "bbch_max": 59
+    },
+    {
+      "id": "D",
+      "name": "flowering",
+      "bbch_min": 61,
+      "bbch_max": 69
+    },
+    {
+      "id": "E",
+      "name": "berry development",
+      "bbch_min": 71,
+      "bbch_max": 79
+    },
+    {
+      "id": "F",
+      "name": "berry ripening",
+      "bbch_min": 81,
+      "bbch_max": 85
+    },
+    {
+      "id": "G",
+      "name": "late ripening and senescence",
+      "bbch_min": 87,
+      "bbch_max": 99
+    }
+  ],
+  "augmentation": {
+    "crop_scale": [
+      0.6,
+      1.0
+    ],
+    "crop_ratio": [
+      0.75,
+      1.3333333333333333
+    ],
+    "horizontal_flip_probability": 0.5,
+    "brightness": 0.2,
+    "contrast": 0.2
+  },
+  "training_defaults": {
+    "seed": 42,
+    "workers": 2,
+    "cache_batch_size": 8,
+    "augmented_views": 5,
+    "stage1": {
+      "epochs": 5,
+      "batch_size": 256,
+      "learning_rate": 0.001,
+      "warmup_epochs": 1
+    },
+    "stage2": {
+      "epochs": 9,
+      "physical_batch_size": 8,
+      "effective_batch_size": 16,
+      "head_learning_rate": 0.0001,
+      "last_block_learning_rate": 2e-05,
+      "layerwise_decay": 0.75,
+      "trainable_blocks": 4,
+      "warmup_epochs": 1
+    },
+    "sigma": 0.75,
+    "weight_decay": 0.05,
+    "regression_loss_weight": 1.0
+  },
+  "evaluation_defaults": {
+    "batch_size": 8,
+    "workers": 2,
+    "bootstrap_repetitions": 2000,
+    "bootstrap_seed": 42,
+    "minimum_images": 10,
+    "minimum_groups": 3
+  },
+  "grouping_defaults": {
+    "session_gap_minutes": 10,
+    "cluster_distance": 0.15
+  }
+}

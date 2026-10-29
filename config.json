@@ -1,0 +1,38 @@
+{
+  "_istruzioni": "Modifica solo questo file. I percorsi relativi partono dalla cartella del progetto; non modificare i file Python.",
+  "dati": {
+    "immagini": "../grapevine_dataset/data/raw/VOL",
+    "metadati": "../grapevine_dataset/data/metadata/Metadati_VOL/Metadati_VOL.xlsx",
+    "foglio": "Catalogo foto",
+    "gruppi": "outputs/data/groups.csv",
+    "duplicati": "../grapevine_dataset/data/processed/duplicate_analysis/duplicate_groups.csv",
+    "valutazioni_duplicati": null,
+    "_guida": "Per nuovi dati aggiorna immagini e metadati. I gruppi sono facoltativi: null per ricalcolarli. I dati originali non sono modificati."
+  },
+  "suddivisione": {
+    "training": 0.8,
+    "dev": 0.1,
+    "test": 0.1,
+    "seme": 42,
+    "_guida": "Le tre quote devono sommare a 1. La divisione è per gruppi di foto correlate (StratifiedGroupKFold): un gruppo resta interamente in un solo insieme. Richiede quote 0.8/0.1/0.1 e almeno 10 gruppi. Le suddivisioni esistenti non sono sovrascritte."
+  },
+  "addestramento": {
+    "epoche_prima_fase": 5,
+    "epoche_seconda_fase": 9,
+    "lato_immagini": 336,
+    "immagini_insieme": 8,
+    "immagini_per_aggiornamento": 16,
+    "processi_lettura": 2,
+    "_guida": "Epoca = un passaggio sulle immagini di training. Immagini insieme = carico sulla memoria; immagini per aggiornamento deve esserne un multiplo. Il lato deve essere multiplo di 14."
+  },
+  "previsione": {
+    "immagini": "../PhenologyDeepLearning-data/da_prevedere",
+    "_guida": "Un file oppure una cartella. Si cercano JPEG, HEIC/HEIF e PNG anche nelle sottocartelle. Il risultato completo viene salvato in CSV."
+  },
+  "ambiente": {
+    "dinov2": "~/.cache/torch/hub/facebookresearch_dinov2_main",
+    "dispositivo": "auto",
+    "_guida": "auto sceglie NVIDIA, Apple oppure CPU. dinov2 deve indicare una copia locale del repository ufficiale; i pesi ufficiali devono essere disponibili nella cache Torch."
+  },
+  "risultati": "outputs"
+}
